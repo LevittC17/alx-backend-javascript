@@ -336,7 +336,7 @@ export default function appendToEachArrayValue(array, appendString) {
 ```
 
 **Execution**
-``
+```
 bob@dylan:~$ cat 10-main.js
 import appendToEachArrayValue from './10-loops.js';
 
