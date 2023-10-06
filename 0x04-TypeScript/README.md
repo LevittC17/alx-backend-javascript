@@ -36,7 +36,8 @@ Please use these files for the following tasks
 
 **package.json**
 Click to show/hide file contents
-```
+
+```js
 {
   "name": "typescript_dependencies",
   "version": "1.0.0",
@@ -74,7 +75,8 @@ Click to show/hide file contents
 
 **.eslintrc.js**
 Click to show/hide file contents
-```
+
+```s
 module.exports =  {
   parser:  '@typescript-eslint/parser',
   extends:  [
@@ -92,7 +94,8 @@ module.exports =  {
 
 **tsconfig.json**
 Click to show/hide file contents
-```
+
+```ts
 {
   "compilerOptions": {
     "outDir": "./dist/",
@@ -110,7 +113,8 @@ Click to show/hide file contents
 
 **webpack.config.js**
 Click to show/hide file contents
-```
+
+```js
 const path = require("path");
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
