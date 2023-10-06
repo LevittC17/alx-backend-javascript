@@ -1,12 +1,16 @@
 export default function cleanSet(set, startString) {
-  // Create an array of values from the set
-  const valuesArray = Array.from(set);
+  let result = '';
 
-  // Use filter to keep only values that start with startString
-  const filteredValues = valuesArray.filter((value) => value.startsWith(startString));
+  for (const item of set) {
+    if (item.startsWith(startString)) {
+      result += `${item.slice(startString.length)}-`;
+    }
+  }
 
-  // Use join to concatenate the filtered values with "-"
-  const resultString = filteredValues.join('-');
+  // Remove the trailing '-' if it exists
+  if (result.endsWith('-')) {
+    result = result.slice(0, -1);
+  }
 
-  return resultString;
+  return result;
 }
