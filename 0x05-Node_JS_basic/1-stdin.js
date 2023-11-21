@@ -6,11 +6,9 @@
 process.stdout.write("Welcome to Holberton School, what is your name?\n");
 
 // Listen for user input on stdin
-process.stdin.on('data', (data) => {
-  /**
-   * @param {string} data - User input from stdin
-   */
-  const name = data.toString().trim();
+process.stdin.on('readable', () => {
+  const name = process.stdin.read();
+
   if (name) {
     // Display the user's name
     console.log(`Your name is: ${name}`);
