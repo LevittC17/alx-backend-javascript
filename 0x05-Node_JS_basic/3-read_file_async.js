@@ -12,7 +12,7 @@ const countStudents = async (dataPath) => {
     const lines = data.trim().split('\n');
 
     if (lines.length <= 1) {
-      throw new Error('Cannot load the database');
+      throw new Error('Database is empty');
     }
 
     const studentGroups = {};
@@ -45,6 +45,7 @@ const countStudents = async (dataPath) => {
       console.log(`Number of students in ${field}: ${group.length}. List: ${studentNames}`);
     }
   } catch (error) {
+    console.error(`Error: ${error.message}`);
     throw new Error('Cannot load the database');
   }
 };
