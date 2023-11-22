@@ -3,7 +3,7 @@ const http = require('http');
 // Create an HTTP server
 const app = http.createServer((req, res) => {
   // Set the response headers
-  res.writeHead(200, {'Content-Type': 'text/plain'});
+  res.writeHead(200, { 'Content-Type': 'text/plain' });
 
   // Send the respose body
   res.end('Hello Holberton School!\n');
@@ -16,4 +16,4 @@ app.listen(port, () => {
 });
 
 // Export the app variable
-module.exports = app
+module.exports = app;
