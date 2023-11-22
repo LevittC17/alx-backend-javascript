@@ -1,14 +1,17 @@
-const fs = require('fs/promises');
+const fs = require('fs');
 
 /**
- * Reads the database file asynchronously and counts the number of students.
+ * Counts the students in a CSV data file asynchronously.
  * @param {string} dataPath - The path to the CSV data file.
  * @returns {Promise<void>} A Promise that resolves when the operation is complete.
  */
-const countStudents = async (dataPath) => {
+const countStudentsAsync = async (dataPath) => {
   try {
-    // Attempt to read the database file asynchronously
-    const data = await fs.readFile(dataPath, 'utf-8');
+    // Ensure the database file exists
+    await fs.promises.access(dataPath, fs.constants.F_OK);
+
+    // Read the database file asynchronously
+    const data = await fs.promises.readFile(dataPath, 'utf-8');
     const lines = data.trim().split('\n');
 
     if (lines.length <= 1) {
@@ -16,17 +19,14 @@ const countStudents = async (dataPath) => {
     }
 
     const studentGroups = {};
-    const dbFieldNames = lines[0].split(',');
+    const [dbFieldNames, ...fileLines] = lines.map((line) => line.split(','));
     const studentPropNames = dbFieldNames.slice(0, dbFieldNames.length - 1);
 
-    for (const line of lines.slice(1)) {
-      const studentRecord = line.split(',');
+    for (const studentRecord of fileLines) {
       const studentPropValues = studentRecord.slice(0, studentRecord.length - 1);
       const field = studentRecord[studentRecord.length - 1];
 
-      if (!Object.keys(studentGroups).includes(field)) {
-        studentGroups[field] = [];
-      }
+      studentGroups[field] = studentGroups[field] || [];
 
       const studentEntries = studentPropNames
         .map((propName, idx) => [propName, studentPropValues[idx]]);
@@ -50,4 +50,4 @@ const countStudents = async (dataPath) => {
   }
 };
 
-module.exports = countStudents;
+module.exports = countStudentsAsync;
