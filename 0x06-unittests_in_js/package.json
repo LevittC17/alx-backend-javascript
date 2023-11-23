@@ -1,0 +1,17 @@
+{
+  "name": "0x06. Unittests in JS",
+  "version": "1.0.0",
+  "description": "UnitTests Back-end JavaScript ES6 NodeJS ExpressJS Mocha",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha",
+    "start": "nodemon"
+  },
+  "keywords": [],
+  "author": "Your Name",
+  "license": "ISC",
+  "devDependencies": {
+    "mocha": "^8.3.2",
+    "nodemon": "^2.0.13"
+  }
+}
