@@ -1,45 +1,28 @@
-// 8-api/api.test.js
-const request = require('request');
-const { expect } = require('chai');
+const request = require("request");
+const {describe, it} = require("mocha");
+const expect = require("chai").expect;
 
-describe('Index page', function () {
-  it('Correct status code?', function (done) {
-    request('http://localhost:7865', function (error, response) {
-      expect(response.statusCode).to.equal(200);
-      done();
+describe("Index page", function() {
+    const options = {
+	url: "http://localhost:7865/",
+	method: "GET"
+    }
+    it("check correct status code", function(done) {
+	request(options, function(err, res, body) {
+	    expect(res.statusCode).to.equal(200);
+	    done();
+	});
     });
-  });
-
-  it('Correct result?', function (done) {
-    request('http://localhost:7865', function (error, response, body) {
-      expect(body).to.equal('Welcome to the payment system');
-      done();
+    it("check correct content", function(done) {
+	request(options, function(err, res, body) {
+	    expect(body).to.contain("Welcome to the payment system");
+	    done();
+	});
     });
-  });
-
-  it('Other?', function (done) {
-    // Add other integration tests if needed
-    done();
-  });
+    it("check correct content length", function(done) {
+	request(options, function(err, res, body) {
+	    expect(res.headers['content-length']).to.equal('29');
+	    done();
+	});
+    });
 });
-
-/**describe('Server', function () {
-  let server;
-
-  before(function () {
-    server = require('./api');
-  });
-
-  after(function () {
-    server.close();
-  });
-
-  it('Server is running', function (done) {
-    // Additional test to check if the server is running
-    request('http://localhost:7865', function (error, response) {
-      expect(response.statusCode).to.equal(200);
-      done();
-    });
-  });
-});
-*/
