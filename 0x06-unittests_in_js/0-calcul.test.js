@@ -26,4 +26,7 @@ describe('calculateNumber', () => {
     // Test case 4
     assert.strictEqual(calculateNumber(1.5, 3.7), 6);
   });
+  it('return sum of rounded negative numbers', () => {
+    assert.strictEqual(calculateNumber(-1.2, -3.7), -5);
+  });
 });
