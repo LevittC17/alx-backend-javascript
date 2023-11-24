@@ -1,88 +1,97 @@
 const http = require('http');
-const fs = require('fs');
+const { readFile } = require('fs');
 
-/**
- * Parses CSV data into an array of student objects.
- * @param {string} data - CSV data to be parsed.
- * @returns {Array} An array of student objects.
- */
-function parseCSV(data) {
-  return data
-    .split('\n')
-    .map((line) => line.split(','))
-    .filter((student) => student.length === 4 && student[0] !== '' && !Number.isNaN(Number(student[2])))
-    .map((student) => ({
-      firstname: student[0],
-      lastname: student[1],
-      age: parseInt(student[2], 10),
-      field: student[3],
-    }));
-}
-
-/**
- * Counts the number of students and generates a list for a specific field.
- * @param {Array} students - Array of student objects.
- * @param {string} field - The field to filter students.
- * @returns {Object} An object with count and list properties.
- */
-function countStudents(students, field) {
-  const filteredStudents = students.filter((student) => student.field === field);
-  return {
-    count: filteredStudents.length,
-    list: filteredStudents.map((student) => student.firstname).join(', '),
-  };
-}
-
-/**
- * Loads students from a CSV file.
- * @param {string} path - The path to the CSV file.
- * @returns {Array} An array of student objects.
- */
-function loadStudentsFromFile(path) {
-  try {
-    const data = fs.readFileSync(path, 'utf-8');
-    return parseCSV(data);
-  } catch (error) {
-    console.error(`Error loading students from file: ${error.message}`);
-    return [];
-  }
-}
-
-const hostname = 'localhost';
+// Server configuration
+const hostname = '127.0.0.1';
 const port = 1245;
 
-const app = http.createServer((req, res) => {
-  res.statusCode = 200;
-  res.setHeader('Content-Type', 'text/plain');
-  const { url } = req;
+/**
+ * Counts the number of students and generates a list for each field.
+ * @param {string} fileName - The path to the CSV file.
+ * @returns {Promise<string>} A promise that resolves with the output string.
+ */
+function countStudents(fileName) {
+  // Objects to store students and fields
+  const students = {};
+  const fields = {};
+  let length = 0;
 
-  if (url === '/') {
-    res.write('Hello Holberton School!');
-    res.end();
+  return new Promise((resolve, reject) => {
+    // Read file asynchronously
+    readFile(fileName, (err, data) => {
+      if (err) {
+        reject(err);
+      } else {
+        let output = '';
+        // Split data into lines
+        const lines = data.toString().split('\n');
+
+        // Iterate through each line
+        for (let i = 0; i < lines.length; i += 1) {
+          if (lines[i]) {
+            length += 1;
+            const field = lines[i].toString().split(',');
+
+            // Update students object
+            if (Object.prototype.hasOwnProperty.call(students, field[3])) {
+              students[field[3]].push(field[0]);
+            } else {
+              students[field[3]] = [field[0]];
+            }
+
+            // Update fields object
+            if (Object.prototype.hasOwnProperty.call(fields, field[3])) {
+              fields[field[3]] += 1;
+            } else {
+              fields[field[3]] = 1;
+            }
+          }
+        }
+
+        const l = length - 1;
+        output += `Number of students: ${l}\n`;
+
+        // Generate output for each field
+        for (const [key, value] of Object.entries(fields)) {
+          if (key !== 'field') {
+            output += `Number of students in ${key}: ${value}. `;
+            output += `List: ${students[key].join(', ')}\n`;
+          }
+        }
+
+        resolve(output);
+      }
+    });
+  });
+}
+
+// Create HTTP server
+const app = http.createServer((request, response) => {
+  response.statusCode = 200;
+  response.setHeader('Content-Type', 'text/plain');
+
+  // Handle root path
+  if (request.url === '/') {
+    response.write('Hello Holberton School!');
+    response.end();
   }
 
-  if (url === '/students') {
-    try {
-      const students = loadStudentsFromFile(process.argv[2]);
-      res.write('This is the list of our students\n');
-      res.write(`Number of students: ${students.length}\n`);
-
-      const csStudents = countStudents(students, 'CS');
-      const sweStudents = countStudents(students, 'SWE');
-
-      res.write(`Number of students in CS: ${csStudents.count}. ` +
-                `List: ${csStudents.list}\n`);
-      res.write(`Number of students in SWE: ${sweStudents.count}. ` +
-                `List: ${sweStudents.list}\n`);
-
-      res.end();
-    } catch (err) {
-      console.error(`Error handling /students endpoint: ${err.message}`);
-      res.end(err.message);
-    }
+  // Handle /students path
+  if (request.url === '/students') {
+    response.write('This is the list of our students\n');
+    countStudents(process.argv[2].toString())
+      .then((output) => {
+        const outString = output.slice(0, -1);
+        response.end(outString);
+      })
+      .catch(() => {
+        response.statusCode = 404;
+        response.end('Cannot load the database');
+      });
   }
 });
 
-app.listen(port, hostname);
+// Listen on the specified port and hostname
+app.listen(port, hostname, () => {});
 
 module.exports = app;
