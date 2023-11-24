@@ -1,4 +1,4 @@
-const { describe, it } = require('mocha');
+const { describe, it, done } = require('mocha');
 const { expect } = require('chai');
 const getPaymentTokenFromAPI = require('./6-payment_token');
 
