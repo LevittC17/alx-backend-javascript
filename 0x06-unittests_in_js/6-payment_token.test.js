@@ -1,13 +1,24 @@
-const { it, describe } = require('mocha');
-const { expect } = require('chai');
+const chai = require('chai');
+const expect = chai.expect;
+
 const getPaymentTokenFromAPI = require('./6-payment_token');
 
 describe('getPaymentTokenFromAPI', () => {
-  it('should resolve with the correct response when success is true', (done) => {
+  it('should return an instance of a Promise', () => {
+    const res = getPaymentTokenFromAPI();
+    expect(res).to.be.an.instanceof(Promise);
+  });
+  it("should return a JSON data object {data: 'Successful response from the API'", () => {
     getPaymentTokenFromAPI(true)
-      .then((data) => {
-        expect(data).to.have.property('data');
+      .then((res) => {
+        expect(res.data).to.be.equal('Successful response from the API');
         done();
+      });
+  });
+  it('should do nothing when not success', () => {
+    getPaymentTokenFromAPI(false)
+      .then((res) => {
+        expect(res).to.equal('');
       });
   });
 });
