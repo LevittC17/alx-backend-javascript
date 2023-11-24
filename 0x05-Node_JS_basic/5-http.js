@@ -1,41 +1,77 @@
 const http = require('http');
 const fs = require('fs');
 
+/**
+ * Parses CSV data into an array of student objects.
+ * @param {string} data - CSV data to be parsed.
+ * @returns {Array} An array of student objects.
+ */
+function parseCSV(data) {
+  return data
+    .split('\n')
+    .map((line) => line.split(','))
+    .filter((student) => student.length === 4 && student[0] !== '' && !Number.isNaN(Number(student[2])))
+    .map((student) => ({ firstname: student[0], lastname: student[1], age: parseInt(student[2], 10), field: student[3] }));
+}
+
+/**
+ * Counts the number of students and generates a list for a specific field.
+ * @param {Array} students - Array of student objects.
+ * @param {string} field - The field to filter students.
+ * @returns {Object} An object with count and list properties.
+ */
+function countStudents(students, field) {
+  const filteredStudents = students.filter((student) => student.field === field);
+  return {
+    count: filteredStudents.length,
+    list: filteredStudents.map((student) => student.firstname).join(', '),
+  };
+}
+
+/**
+ * Loads students from a CSV file.
+ * @param {string} path - The path to the CSV file.
+ * @returns {Array} An array of student objects.
+ */
+function loadStudentsFromFile(path) {
+  const data = fs.readFileSync(path, 'utf-8');
+  return parseCSV(data);
+}
+
+const hostname = 'localhost';
 const port = 1245;
 
-// Read the content of 3-read_file_async.js for /sudents endpoint
-const readFileSync = (path) => {
-  try {
-    return fs.readFileSync(path, 'utf-8');
-  } catch (error) {
-    console.log(`Error reading file: ${error.message}`);
-    return 'Cannot load the file';
-  }
-};
-
-// Create an HTTP server
 const app = http.createServer((req, res) => {
-  // Set the response headers
+  res.statusCode = 200;
   res.setHeader('Content-Type', 'text/plain');
+  const { url } = req;
 
-  // Check the request URL and respond accordingly
-  if (req.url === '/') {
-    res.writeHead(200);
-    res.end('Hello Holberton School!\n');
-  } else if (req.url === '/students') {
-    res.writeHead(200);
-    const studentsData = readFileSync(process.argv[2]);
-    res.end(`This is the list of our students\n${studentsData}`);
-  } else {
-    res.writeHead(404);
-    res.end('Not Found\n');
+  if (url === '/') {
+    res.write('Hello Holberton School!');
+    res.end();
+  }
+
+  if (url === '/students') {
+    try {
+      const students = loadStudentsFromFile(process.argv[2]);
+      res.write('This is the list of our students\n');
+      res.write(`Number of students: ${students.length}\n`);
+
+      const csStudents = countStudents(students, 'CS');
+      const sweStudents = countStudents(students, 'SWE');
+
+      res.write(`Number of students in CS: ${csStudents.count}. ` +
+                `List: ${csStudents.list}\n`);
+      res.write(`Number of students in SWE: ${sweStudents.count}. ` +
+                `List: ${sweStudents.list}\n`);
+
+      res.end();
+    } catch (err) {
+      res.end(err.message);
+    }
   }
 });
 
-// Listen on port 1245
-app.listen(port, () => {
-  console.log(`Server is listening on http://localhost:${port}`);
-});
+app.listen(port, hostname);
 
-// Export the app variable
 module.exports = app;
