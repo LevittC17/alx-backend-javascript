@@ -35,6 +35,14 @@ describe('Cart page', () => {
     });
   });
 
+  it('GET /cart/:id returns "Payment methods for cart :id"', (done) => {
+    request('http://localhost:7865/cart/123', (error, response, body) => {
+      expect(response && response.statusCode).to.equal(200);
+      expect(body).to.equal('Payment methods for cart 123');
+      done();
+    });
+  });
+
   it('Correct status code when :id is NOT a number (=> 404)?', (done) => {
     request('http://localhost:7865/cart/hello', (error, response) => {
       expect(response && response.statusCode).to.equal(404);
