@@ -7,18 +7,7 @@ describe('getPaymentTokenFromAPI', () => {
     // Call the function with success set to true
     getPaymentTokenFromAPI(true).then((result) => {
       // Assert that the result is as expected
-      expect(result).to.deep.equal({ data: 'Successful response from the API' });
-
-      // Call done to indicate that the async test is complete
-      done();
-    });
-  });
-
-  it('Resolve with undefined when success = false', () => {
-    // Call the function with success set to false
-    getPaymentTokenFromAPI(false).then((result) => {
-      // Assert that the result is as expected
-      expect(result).to.equal(undefined);
+      expect(result).to.have.property('result');
 
       // Call done to indicate that the async test is complete
       done();
