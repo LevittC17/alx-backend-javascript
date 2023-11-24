@@ -1,23 +1,35 @@
 {
-  "name": "0x06. Unittests in JS",
+  "name": "0x06-unittests_in_js",
   "version": "1.0.0",
-  "description": "UnitTests Back-end JavaScript ES6 NodeJS ExpressJS Mocha",
-  "main": "index.js",
+  "description": "JavaScript / Node JS Unittests and Integration Tests",
+  "main": "0-calcul.js",
   "scripts": {
-    "test": "mocha",
-    "start": "nodemon",
-    "lint": "eslint"
+    "test": "mocha"
   },
-  "keywords": [],
-  "author": "Your Name",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LevittC17/alx-backend-javascript.git"
+  },
+  "keywords": [
+    "unittest",
+    "nodejs",
+    "es6",
+    "express",
+    "mocha"
+  ],
+  "author": "LevittC17",
   "license": "ISC",
   "devDependencies": {
-    "chai": "^4.3.10",
-    "eslint": "^8.54.0",
+    "chai": "^4.3.6",
+    "eslint": "^8.7.0",
     "eslint-config-airbnb-base": "^15.0.0",
-    "eslint-plugin-import": "^2.29.0",
-    "mocha": "^8.3.2",
-    "nodemon": "^2.0.13",
-    "sinon": "^17.0.1"
-  }
+    "eslint-plugin-import": "^2.25.4",
+    "eslint-plugin-mocha": "^10.0.3",
+    "mocha": "^9.2.0",
+    "sinon": "^16.1.1"
+  },
+  "bugs": {
+    "url": "https://github.com/LevittC17/alx-backend-javascript/issues"
+  },
+  "homepage": "https://github.com/LevittC17/alx-backend-javascript#readme"
 }
