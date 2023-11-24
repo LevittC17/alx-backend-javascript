@@ -2,7 +2,7 @@ const { it, describe } = require('mocha');
 const { expect } = require('chai');
 const sinon = require('sinon');
 const Utils = require('./utils');
-const { sendPaymentRequestToApi } = require('./4-payment');
+const sendPaymentRequestToApi = require('./4-payment');
 
 describe('sendPaymentRequestToApi', () => {
   it('should stub Utils.calculateNumber and log the correct message', () => {
