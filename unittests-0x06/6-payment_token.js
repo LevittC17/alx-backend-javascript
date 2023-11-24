@@ -4,11 +4,11 @@
  * @returns {Promise<Object>} A promise with the APU response
  */
 function getPaymentTokenFromAPI(success) {
-  if (success) {
-    return new Promise((resolve) => {
-      resolve({ data: 'Successful response from the API' });
-    });
-  }
+  return new Promise((resolve) => {
+    if (success) {
+      resolve({ data: 'Successful response from API' });
+    }
+  });
 }
 
 module.exports = getPaymentTokenFromAPI;
