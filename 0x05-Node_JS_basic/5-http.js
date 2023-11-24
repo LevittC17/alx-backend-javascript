@@ -11,7 +11,12 @@ function parseCSV(data) {
     .split('\n')
     .map((line) => line.split(','))
     .filter((student) => student.length === 4 && student[0] !== '' && !Number.isNaN(Number(student[2])))
-    .map((student) => ({ firstname: student[0], lastname: student[1], age: parseInt(student[2], 10), field: student[3] }));
+    .map((student) => ({
+      firstname: student[0],
+      lastname: student[1],
+      age: parseInt(student[2], 10),
+      field: student[3],
+    }));
 }
 
 /**
@@ -34,8 +39,13 @@ function countStudents(students, field) {
  * @returns {Array} An array of student objects.
  */
 function loadStudentsFromFile(path) {
-  const data = fs.readFileSync(path, 'utf-8');
-  return parseCSV(data);
+  try {
+    const data = fs.readFileSync(path, 'utf-8');
+    return parseCSV(data);
+  } catch (error) {
+    console.error(`Error loading students from file: ${error.message}`);
+    return [];
+  }
 }
 
 const hostname = 'localhost';
@@ -67,6 +77,7 @@ const app = http.createServer((req, res) => {
 
       res.end();
     } catch (err) {
+      console.error(`Error handling /students endpoint: ${err.message}`);
       res.end(err.message);
     }
   }
