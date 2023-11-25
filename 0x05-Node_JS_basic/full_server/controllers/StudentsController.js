@@ -1,4 +1,4 @@
-import { readDatabase } from '../utils.js';
+const readDatabase = require('../utils');
 
 export default class StudentsController {
   static async getAllStudents(request, response) {
