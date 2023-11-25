@@ -1,61 +1,37 @@
-const readDatabase = require('../utils');
+import readDatabase from '../utils';
 
-/**
- * Controller class for handling student-related operations.
- */
-class StudentsController {
-  /**
-   * Handles the request to get a list of all students grouped by fields.
-   *
-   * @param {Object} request - The Express request object.
-   * @param {Object} response - The Express response object.
-   */
-  static getAllStudents(request, response) {
-    // Read the student database and process the data
-    readDatabase(process.argv[2].toString()).then((students) => {
-      const output = [];
+export default class StudentsController {
+  static async getAllStudents(request, response) {
+    try {
+      const students = await readDatabase(process.argv[2].toString());
+      const output = ['This is the list of our students'];
 
-      // Construct the output array with information about each field
-      output.push('This is the list of our students');
-      const keys = Object.keys(students);
-      keys.sort();
-      for (let i = 0; i < keys.length; i += 1) {
-        output.push(`Number of students in ${keys[i]}: ${students[keys[i]].length}. List: ${students[keys[i]].join(', ')}`);
-      }
+      Object.keys(students).sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' })).forEach((key) => {
+        const count = students[key].length;
+        const list = students[key].join(', ');
+        output.push(`Number of students in ${key}: ${count}. List: ${list}`);
+      });
 
-      // Send the constructed output as the response
       response.status(200).send(output.join('\n'));
-    }).catch(() => {
-      // Handle errors when reading the database
+    } catch (err) {
       response.status(500).send('Cannot load the database');
-    });
+    }
   }
 
-  /**
-   * Handles the request to get a list of students in a specific major (field).
-   *
-   * @param {Object} request - The Express request object.
-   * @param {Object} response - The Express response object.
-   */
-  static getAllStudentsByMajor(request, response) {
-    // Extract the major parameter from the request
-    const field = request.params.major;
+  static async getAllStudentsByMajor(request, response) {
+    const { major } = request.params;
 
-    // Read the student database and process the data
-    readDatabase(process.argv[2].toString()).then((students) => {
-      // Check if the specified major is valid
-      if (!(field in students)) {
-        response.status(500).send('Major parameter must be CS or SWE');
-      } else {
-        // Send the list of students in the specified major as the response
-        response.status(200).send(`List: ${students[field].join(', ')}`);
-      }
-    }).catch(() => {
-      // Handle errors when reading the database
+    if (major !== 'CS' && major !== 'SWE') {
+      response.status(500).send('Major parameter must be CS or SWE');
+      return;
+    }
+
+    try {
+      const students = await readDatabase(process.argv[2].toString());
+      const list = students[major].join(', ');
+      response.status(200).send(`List: ${list}`);
+    } catch (err) {
       response.status(500).send('Cannot load the database');
-    });
+    }
   }
 }
-
-// Export the StudentsController class for use in other modules
-module.exports = StudentsController;
