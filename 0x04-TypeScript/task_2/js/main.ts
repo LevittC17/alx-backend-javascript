@@ -124,3 +124,30 @@ console.log(createEmployee('$500')); // Output: Director
 // Example Usage
 executeWork(createEmployee(200));
 executeWork(createEmployee(1000));
+
+
+
+/**
+ * String literal types allowing a variable to have the value Math or History only
+ */
+type Subjects = 'Math' | 'History'
+
+/**
+ * Function to teacj a class based on the subject
+ * @param todayClass - The subject for today's class
+ * @returns A string indicating the teaching subject
+ */
+function teachClass(todayClass: Subjects): string {
+  if (todayClass === 'Math') {
+    return 'Teaching Math';
+  } else if (todayClass === 'History') {
+    return 'Teaching History';
+  } else {
+    // Handle other cases or throw an error if necessary
+    return 'Unknown subject';
+  }
+}
+
+// Example usage
+console.log(teachClass('Math'));
+console.log(teachClass('History'));
